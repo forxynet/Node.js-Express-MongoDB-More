@@ -1,7 +1,10 @@
 const morgan = require('morgan');
 const express = require('express');
+
+const AppError = require('./utils/appError');
 const tourRouter = require('./routers/tour-routers');
 const userRouter = require('./routers/user-routers');
+const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
@@ -18,14 +21,14 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((req, res, next) => {
-  console.log(
-    `Request Time: ${req.requestTime} and Client IPAddress: ${req.ip}`
-  );
-  next();
-});
-
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+
+// place is important for middleware routes
+app.all('*', (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this`));
+});
+
+app.use(globalErrorHandler);
 
 module.exports = app;
