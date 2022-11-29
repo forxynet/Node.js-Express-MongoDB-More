@@ -6,16 +6,16 @@ const Tour = require('./../../models/tour-model');
 dotenv.config({ path: './config.env' });
 
 mongoose.connect(
-  process.env.MONGO_URL,
+  process.env.MONGODB_URI,
   {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
   },
   () => {
     console.log('database connected');
   }
 );
-
 // Read JSOn Files from
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
