@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 // const slugify = require('slugify')
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const { nextTick } = require('process');
 // validators.js library w/a lot of validators
 // const validator = require('validator')
 
