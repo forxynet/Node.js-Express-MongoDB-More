@@ -114,6 +114,13 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+// Virtual populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id'
+});
+
 tourSchema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
 });
@@ -150,8 +157,9 @@ tourSchema.pre(/^find/, function(next) {
 });
 
 tourSchema.post(/^find/, function(doc, next) {
-  console.log(`Query took ${Date.now() - this.start} milliseconds!`);
-  //console.log(doc);
+  //console.log(`Query took ${Date.now() - this.start} milliseconds!`);
+
+  console.log(doc);
   next();
 });
 
