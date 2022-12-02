@@ -1,21 +1,23 @@
 const fs = require('fs');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const Tour = require('./../../models/tour-model');
+const Tour = require('./../../models/tourModel');
 
 dotenv.config({ path: './config.env' });
 
 mongoose.connect(
-  process.env.MONGODB_URI,
+  process.env.MONGO_URL,
   {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true
   },
   () => {
     console.log('database connected');
   }
 );
+
 // Read JSOn Files from
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')

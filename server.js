@@ -30,3 +30,9 @@ process.on('UNHANDLEDREJECTION', err => {
     process.exit(1);
   });
 });
+
+
+
+// Do not delete!! Below code regarding mongodb all data delete operation not this code section
+// node ./dev-data/data/import-dev-data.js --delete
+// node ./dev-data/data/import-dev-data.js --import
