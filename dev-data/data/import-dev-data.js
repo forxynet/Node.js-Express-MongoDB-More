@@ -2,6 +2,8 @@ const fs = require('fs');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const Tour = require('./../../models/tourModel');
+const Review = require('./../../models/reviewModel');
+const User = require('./../../models/userModel');
 
 dotenv.config({ path: './config.env' });
 
@@ -19,14 +21,22 @@ mongoose.connect(
 );
 
 // Read JSOn Files from
-const tours = JSON.parse(
+// const tours = JSON.parse(
+//   fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
+// );
+const users = JSON.parse(
+  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
+);
+const reviews = JSON.parse(
   fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
 );
 
 // Import fata into db
 const importData = async () => {
   try {
-    await Tour.create(tours);
+    //await Tour.create(tours);
+    await User.create(users, { validateBeforeSave: false });
+    await Review.create(reviews, { validateBeforeSave: false });
     console.log('Data successfult loaded!');
   } catch (error) {
     console.log(error);
@@ -38,6 +48,8 @@ const importData = async () => {
 const deleteData = async () => {
   try {
     await Tour.deleteMany();
+    await Review.deleteMany();
+    await User.deleteMany();
     console.log('Data successfult loaded!');
   } catch (error) {
     console.log(error);
