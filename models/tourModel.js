@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-// const User = require('./userModel')
-// validators.js library w/a lot of validators
-// const validator = require('validator')
 
 const tourSchema = new mongoose.Schema(
   {
@@ -108,8 +105,12 @@ const tourSchema = new mongoose.Schema(
         type: mongoose.Schema.ObjectId,
         ref: 'User'
       }
+    ],
+    locations: [
+      {
+        type: mongoose.Schema.ObjectId
+      }
     ]
-    // ,
     // reviews: {
     //   type: mongoose.Schema.ObjectId,
     //   ref: 'Review'
@@ -141,6 +142,7 @@ tourSchema.virtual('reviews', {
 // DOCUMENT MIDDLEWARE: runs before .save() command and .create()
 tourSchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true });
+
   next();
 });
 
