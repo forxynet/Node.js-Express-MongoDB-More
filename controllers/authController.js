@@ -36,6 +36,8 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
+  //console.log(req.body);
+
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -44,7 +46,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   });
 
   const url = `${req.protocol}://${req.get('host')}/me`;
-  // console.log(url);
+  //console.log(url);
   await new Email(newUser, url).sendWelcome();
 
   createSendToken(newUser, 201, req, res);
@@ -227,7 +229,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
-  // 1) Get user from collection 
+  // 1) Get user from collection
   const user = await User.findById(req.user.id).select('+password');
 
   // 2) Check if POSTed current password is correct
