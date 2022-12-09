@@ -1,13 +1,8 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
-// const slugify = require('slugify')
-const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
-// validators.js library w/a lot of validators
-// const validator = require('validator')
-
-// name, email, photo, password, passwordConfirm
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -15,7 +10,7 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: [true, 'Please tell us your email'],
+    required: [true, 'Please provide your email'],
     unique: true,
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email']
@@ -48,7 +43,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
-  passwordResetExpires: Date,  
+  passwordResetExpires: Date,
   active: {
     type: Boolean,
     default: true,
@@ -63,20 +58,20 @@ userSchema.pre('save', async function(next) {
   // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
 
-  // Delete the passwordConfirm field
+  // Delete passwordConfirm field
   this.passwordConfirm = undefined;
+  next();
 });
 
 userSchema.pre('save', function(next) {
   if (!this.isModified('password') || this.isNew) return next();
 
-  // -1000 token created after that passwordChangedAt is created.
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
 userSchema.pre(/^find/, function(next) {
-  // This points to the current query
+  // this points to the current query
   this.find({ active: { $ne: false } });
   next();
 });
@@ -95,9 +90,10 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
       10
     );
 
-    // False means NOT changed
-    return JWTTimestamp < changedTimestamp; // 100 < 200
+    return JWTTimestamp < changedTimestamp;
   }
+
+  // False means NOT changed
   return false;
 };
 
@@ -109,7 +105,8 @@ userSchema.methods.createPasswordResetToken = function() {
     .update(resetToken)
     .digest('hex');
 
-  // console.log({ resetToken }, this.passwordResetToken)
+  console.log({ resetToken }, this.passwordResetToken);
+
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
